@@ -1,0 +1,66 @@
+input
+  period(10);
+var
+  i,n,x,y,a,b,c,d : integer;
+  MM              : float;
+function Lower_index(SerieDados : Float;
+periodo : integer) : integer;
+var
+  i,n : integer;
+begin
+  n := periodo - 1;
+  i := 0;
+  while (n >= 0) do
+    begin
+      if (Close[n] < Close[i]) then
+        begin
+          i := n;
+        end;
+      n := n - 1;
+    end;
+  result := i;
+end;
+function Higher_index(SerieDados : Float;
+periodo : integer) : integer;
+var
+  i,n : integer;
+begin
+  n := periodo - 1;
+  i := 0;
+  while (n >= 0) do
+    begin
+      if (Close[n] > Close[i]) then
+        begin
+          i := n;
+        end;
+      n := n - 1;
+    end;
+  result := i;
+end;
+begin
+  MM := MediaExp(9,Close);
+//Condições de venda
+  a := Lower_index(Close,period);
+  if (Close[a] < MM[a]) and (Close[a + 1] < MM[a + 1]) and (Close[a + 2] < MM[a + 2]) and (Close[a + 3] < MM[a + 3]) then
+    begin
+      b := Higher_index(Close,a);
+      if (Close[b] > High[a]) and (Close[b] < MM[b]) and (MM[b] < MM[b + 1]) and (MM[b + 1] < MM[b + 2]) then
+        begin
+          c := b;
+          while (b >= 0) do
+            begin
+              if (Close[b] < Close[c]) then
+                begin
+                  y := - 1;
+                  b := - 1;
+                  paintbar(clred);
+                  Alert(clRed);
+                end;
+              b := b - 1;
+            end;
+        end;
+    end;
+  plot(y);
+  y := 0;
+ 
+end;
